@@ -8,8 +8,6 @@ import com.hdl.elog.ELog;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import hdl.com.lib.runtimepermissions.HPermissions;
-import hdl.com.lib.runtimepermissions.PermissionsResultAction;
 
 /**
  * 功能引导页面
@@ -24,17 +22,17 @@ public class HomeActivity extends AppCompatActivity {
         /**
          * 请求所有清单文件中的权限
          */
-        HPermissions.getInstance().requestAllManifestPermissionsIfNecessary(this, new PermissionsResultAction() {
-            @Override
-            public void onGranted() {
-                ELog.e("权限已被授予");
-            }
-
-            @Override
-            public void onDenied(String s) {
-                ELog.e("权限被拒绝了"+s);
-            }
-        });
+//        HPermissions.getInstance().requestAllManifestPermissionsIfNecessary(this, new PermissionsResultAction() {
+//            @Override
+//            public void onGranted() {
+//                ELog.e("权限已被授予");
+//            }
+//
+//            @Override
+//            public void onDenied(String s) {
+//                ELog.e("权限被拒绝了"+s);
+//            }
+//        });
     }
 
     @OnClick(R.id.tv_home_lan_search)
