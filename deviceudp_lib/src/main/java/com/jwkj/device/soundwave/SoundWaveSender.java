@@ -5,10 +5,14 @@ import android.content.Context;
 import com.hdl.udpsenderlib.UDPResult;
 import com.hdl.udpsenderlib.UDPResultCallback;
 import com.hdl.udpsenderlib.UDPSender;
+import com.jwkj.device.entity.LocalDevice;
+import com.jwkj.device.entity.NearbyDevice;
 import com.lsemtmf.genersdk.tools.emtmf.EMTMFSDK;
 import com.lsemtmf.genersdk.tools.emtmf.EMTMFSDKListener;
 
-
+/**
+ * 声波发送器
+ */
 public class SoundWaveSender {
     private String ssid;
     private String pwd;
@@ -49,7 +53,7 @@ public class SoundWaveSender {
     public void send(ResultCallback callback) {
         checkContextIsNull();
 //        if (this.callback == null) {
-            this.callback = callback;
+        this.callback = callback;
 //        }
         EMTMFSDK.getInstance(mContext).sendWifiSet(mContext, ssid, pwd);
         if (isCanReceive) {
@@ -72,7 +76,16 @@ public class SoundWaveSender {
                     @Override
                     public void onNext(UDPResult result) {
                         if (result.getResultData()[0] == 1) {
-                            callback.onNext(result);
+                            NearbyDevice device = NearbyDevice.getDeviceInfoByByteArray(result.getResultData());
+                            LocalDevice localDevice = new LocalDevice();
+                            localDevice.setVersion(device.getCurrVersion());
+                            localDevice.setFlag(device.getPwdFlag());
+                            localDevice.setSubType(device.getDeviceSubType());
+                            localDevice.setType(device.getDeviceType());
+                            localDevice.setResultData(result.getResultData());
+                            localDevice.setIP(result.getIp());
+                            localDevice.setId(String.valueOf(device.getDeviceId()));
+                            callback.onNext(localDevice);
                         }
                     }
 

@@ -4,6 +4,7 @@ import com.hdl.udpsenderlib.UDPResult;
 import com.hdl.udpsenderlib.UDPResultCallback;
 import com.hdl.udpsenderlib.UDPSender;
 import com.jwkj.device.entity.LocalDevice;
+import com.jwkj.device.entity.ShakeData;
 
 /**
  * 扫描管理器
@@ -105,7 +106,7 @@ public class ShakeManager {
                 .setLocalReceivePort(ShakeData.Cmd.CMD_SHAKE_DEVICE_DEFAULT_PORT)//设置接收端口
                 .setInstructions(ShakeData.getBytes(data))//发送的指令
                 .setReceiveTimeOut(searchTime)//持续searchTime毫秒未接收到消息就结束本次任务
-                .schedule(searchCount, searchDelay)//总的重复执行3次任务，每次执行的间隔为3s
+                .schedule(searchCount, searchDelay)//总的重复执行searchCount次任务，每次执行的间隔为searchDelay秒
                 .start(new UDPResultCallback() {//开始发送
                     /**
                      * 请求开始的时候回调

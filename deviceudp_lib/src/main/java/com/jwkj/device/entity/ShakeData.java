@@ -1,7 +1,6 @@
-package com.jwkj.device.shake;
+package com.jwkj.device.entity;
 
 import com.hdl.udpsenderlib.UDPResult;
-import com.jwkj.device.entity.LocalDevice;
 import com.jwkj.device.utils.MUtils;
 
 import java.nio.ByteBuffer;
@@ -9,7 +8,7 @@ import java.nio.ByteBuffer;
 /**
  * 搜索信息构造
  */
-class ShakeData {
+public class ShakeData {
     /**
      * 指令类型
      */
@@ -73,12 +72,13 @@ class ShakeData {
         if (result == null) {
             return null;
         }
-        LocalDevice data = new LocalDevice();
         ByteBuffer buffer = ByteBuffer.allocate(result.getResultData().length);
         buffer.put(result.getResultData());
         if (buffer.getInt(0) != Cmd.CMD_RECEIVE_DEVICE) {//cmd!=2表示不是搜索回应，此处忽略
             return null;
         }
+        LocalDevice data = new LocalDevice();
+        data.setResultData(buffer.array());
         //下面几个字段是所有固件都会有的，不用判断
         data.setIP(result.getIp());
         data.setId(String.valueOf(buffer.getInt(16)));
@@ -122,7 +122,7 @@ class ShakeData {
                 byte[] macs = new byte[6];
                 System.arraycopy(macs1, 0, macs, 0, 2);
                 System.arraycopy(macs2, 0, macs, 2, 4);
-                data.setMac(MUtils.getMacAddress(macs, ""));
+                data.setMac(MUtils.getMacAddress(macs, ":"));
             }
             //以后新增字段，需要在这里加判断是否可以取这个字段的值，返回true才能取这个值
         } else {
@@ -155,7 +155,7 @@ class ShakeData {
             byte[] macs = new byte[6];
             System.arraycopy(macs1, 0, macs, 0, 2);
             System.arraycopy(macs2, 0, macs, 2, 4);
-            data.setMac(MUtils.getMacAddress(macs, ""));
+            data.setMac(MUtils.getMacAddress(macs, ":"));
         }
         //如果app设置了只允许指定的客户ID设备，局域网搜索时去掉其它设备
         boolean isCustomID = false;

@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 
 /**
- * 设备对象
+ * 本地局域网搜索到的设备对象
  * Created by hdl on 2017/4/11.
  */
 
@@ -69,6 +69,11 @@ public class LocalDevice implements Serializable, Comparable<LocalDevice> {
      */
     private String mac;
 
+    /**
+     * 返回的结果(考虑到此库可能更新没有那么及时，对外提供结果数组)
+     */
+    private byte[] resultData;
+
     public LocalDevice() {
     }
 
@@ -97,16 +102,16 @@ public class LocalDevice implements Serializable, Comparable<LocalDevice> {
     }
 
     /**
-     * @deprecated 固件版本已经不通过此字段返回了
      * @return
+     * @deprecated 固件版本已经不通过此字段返回了
      */
     public String getVersion() {
         return "" + ((rtspflag >> 4) & 0x1);
     }
 
     /**
-     * @deprecated 固件版本已经不通过此字段返回了
      * @param version
+     * @deprecated 固件版本已经不通过此字段返回了
      */
     public void setVersion(int version) {
         this.version = version;
@@ -129,16 +134,16 @@ public class LocalDevice implements Serializable, Comparable<LocalDevice> {
     }
 
     /**
-     * @deprecated 固件版本已经不通过此字段返回了
      * @return
+     * @deprecated 固件版本已经不通过此字段返回了
      */
     public int getRtspflag() {
         return (rtspflag >> 2) & 1;
     }
 
     /**
-     * @deprecated 固件版本已经不通过此字段返回了
      * @param rtspflag
+     * @deprecated 固件版本已经不通过此字段返回了
      */
     public void setRtspflag(int rtspflag) {
         this.rtspflag = rtspflag;
@@ -198,6 +203,14 @@ public class LocalDevice implements Serializable, Comparable<LocalDevice> {
 
     public void setMac(String mac) {
         this.mac = mac;
+    }
+
+    public byte[] getResultData() {
+        return resultData;
+    }
+
+    public void setResultData(byte[] resultData) {
+        this.resultData = resultData;
     }
 
     @Override

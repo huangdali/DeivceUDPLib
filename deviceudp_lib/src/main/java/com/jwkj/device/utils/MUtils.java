@@ -1,5 +1,14 @@
 package com.jwkj.device.utils;
 
+import android.content.Context;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+
+import com.jwkj.device.entity.SSIDType;
+
+import java.util.List;
+
 /**
  * 工具类
  * Created by HDL on 2017/11/15.
@@ -82,11 +91,68 @@ public class MUtils {
 
     /**
      * 获取指定byte数组中的int值
+     *
      * @param buff
      * @param startIndex 其实点
      * @return
      */
     public static int getInt(byte[] buff, int startIndex) {
         return makeInt(buff[startIndex + 3], buff[startIndex + 2], buff[startIndex + 1], buff[startIndex]);
+    }
+
+    /**
+     * 获取wifi加密类型
+     *
+     * @param context
+     * @return
+     */
+    public static SSIDType getSSIDType(Context context) {
+        WifiManager mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info;
+        if (mWifiManager != null) {
+            info = mWifiManager.getConnectionInfo();
+        } else {
+            return SSIDType.UNKNOW;
+        }
+        if (info == null) {
+            return SSIDType.UNKNOW;
+        }
+        // 得到配置好的网络连接
+        List<WifiConfiguration> wifiConfigList = mWifiManager.getConfiguredNetworks();
+
+        for (WifiConfiguration wifiConfiguration : wifiConfigList) {
+            //配置过的SSID
+            String configSSid = wifiConfiguration.SSID;
+            configSSid = configSSid.replace("\"", "");
+
+            //当前连接SSID
+            String currentSSid = info.getSSID();
+            currentSSid = currentSSid.replace("\"", "");
+
+            //比较networkId，防止配置网络保存相同的SSID
+            if (currentSSid.equals(configSSid) && info.getNetworkId() == wifiConfiguration.networkId) {
+                if (wifiConfiguration.allowedKeyManagement.get(WifiConfiguration.KeyMgmt.WPA_PSK)) {
+                    return SSIDType.PSK;
+                }
+                if (wifiConfiguration.allowedKeyManagement.get(WifiConfiguration.KeyMgmt.WPA_EAP) || wifiConfiguration.allowedKeyManagement.get(WifiConfiguration.KeyMgmt.IEEE8021X)) {
+                    return SSIDType.EAP;
+                }
+                return (wifiConfiguration.wepKeys[0] != null) ? SSIDType.WEP : SSIDType.NONE;
+            }
+        }
+        return SSIDType.UNKNOW;
+    }
+
+    /**
+     * 根据wifi名字获取设备id
+     *
+     * @param wifiSSID
+     * @return
+     */
+    public static String getAPDeviceId(String wifiSSID) throws Exception {
+        if (!wifiSSID.startsWith("GW_AP_")) {
+            throw new Exception("open wifi fail");
+        }
+        return wifiSSID.substring(wifiSSID.lastIndexOf("_") + 1);
     }
 }

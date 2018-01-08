@@ -5,9 +5,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.hdl.elog.ELog;
+import com.hdl.udp.entity.PageType;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hdl.com.lib.runtimepermissions.HPermissions;
+import hdl.com.lib.runtimepermissions.PermissionsResultAction;
 
 /**
  * 功能引导页面
@@ -22,17 +25,18 @@ public class HomeActivity extends AppCompatActivity {
         /**
          * 请求所有清单文件中的权限
          */
-//        HPermissions.getInstance().requestAllManifestPermissionsIfNecessary(this, new PermissionsResultAction() {
-//            @Override
-//            public void onGranted() {
-//                ELog.e("权限已被授予");
-//            }
-//
-//            @Override
-//            public void onDenied(String s) {
-//                ELog.e("权限被拒绝了"+s);
-//            }
-//        });
+        HPermissions.getInstance()
+                .requestAllManifestPermissionsIfNecessary(this, new PermissionsResultAction() {
+                    @Override
+                    public void onGranted() {
+                        ELog.e("权限已被授予");
+                    }
+
+                    @Override
+                    public void onDenied(String s) {
+                        ELog.e("权限被拒绝了" + s);
+                    }
+                });
     }
 
     @OnClick(R.id.tv_home_lan_search)
@@ -44,12 +48,12 @@ public class HomeActivity extends AppCompatActivity {
     @OnClick(R.id.tv_home_soundware)
     void toSoundWare() {
         ELog.e("进入声波配网页面");
-        startActivity(new Intent(this, SoundWareActivity.class));
+        startActivity(new Intent(this, InitSDKActivity.class).putExtra("pageType", PageType.SOUND_WARE));
     }
 
     @OnClick(R.id.tv_home_ap)
     void toAP() {
         ELog.e("进入AP配网页面");
-        startActivity(new Intent(this, LANActivity.class));
+        startActivity(new Intent(this, InitSDKActivity.class).putExtra("pageType", PageType.AP_MODE));
     }
 }

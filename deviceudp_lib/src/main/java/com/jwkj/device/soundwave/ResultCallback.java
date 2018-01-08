@@ -1,9 +1,9 @@
 package com.jwkj.device.soundwave;
 
-import com.hdl.udpsenderlib.UDPResultCallback;
+import com.jwkj.device.shake.ShakeListener;
 
 
-public abstract class ResultCallback extends UDPResultCallback {
+public abstract class ResultCallback extends ShakeListener {
 
     public abstract void onStopSend();
 }
